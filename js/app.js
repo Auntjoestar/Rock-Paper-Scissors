@@ -1,23 +1,40 @@
 import * as Choices from './choices.js';
+
 document.addEventListener('DOMContentLoaded', function() {
+    loadGame();
+});
+
+function loadGame() {
     const selectionView = document.getElementById('selection-view');
     const loadingView = document.getElementById('loading-view');
     const resultView = document.getElementById('result-view');
     const playButton = document.querySelector('#play');
     const playerScoreDisplay = document.querySelector('#player-score');
     const computerScoreDisplay = document.querySelector('#computer-score');
+    const winner = document.querySelector('#winner');
+
+    const playerScore = localStorage.getItem('playerScore');
+    const computerScore = localStorage.getItem('computerScore');
+
+    if (playerScore >= 5 || computerScore >= 5) {
+        localStorage.setItem('playerScore', 0);
+        localStorage.setItem('computerScore', 0);
+        playerScoreDisplay.textContent = 0;
+        computerScoreDisplay.textContent = 0;
+    }
 
     selectionView.style.display = 'block';
     loadingView.style.display = 'none';
     resultView.style.display = 'none';
     playButton.style.display = 'none';
+
+    winner.textContent = '';
     
-    playerScoreDisplay.textContent = localStorage.getItem('playerScore');
-    computerScoreDisplay.textContent = localStorage.getItem('computerScore');
+    playerScoreDisplay.textContent = localStorage.getItem('playerScore') || 0;
+    computerScoreDisplay.textContent = localStorage.getItem('computerScore') || 0;
 
     humanChoice();
-});
-
+}
 
 if (localStorage.getItem('playerScore') === null) {
     localStorage.setItem('playerScore', 0);
@@ -37,54 +54,48 @@ function humanChoice() {
 
             showSelected.textContent = selectedChoice;
             playButton.style.display = 'block';
-            
 
-            playRound(selectedChoice);
+            // use onclick instead of addEventListener to prevent multiple event listeners.
+            playButton.onclick = () => playRound(selectedChoice);
         });
     });
 }
 
 function playRound(humanChoice) {
-    const playButton = document.querySelector('#play');
     const selectionView = document.getElementById('selection-view');
     const loadingView = document.getElementById('loading-view');
     const resultView = document.getElementById('result-view');
+    const playerScoreDisplay = document.querySelector('#player-score');
+    const computerScoreDisplay = document.querySelector('#computer-score');
 
-    playButton.addEventListener('click', function () {
-        playButton.style.display = 'none';
-        selectionView.style.display = 'none';
-        loadingView.style.display = 'block';
-        resultView.style.display = 'none';
+    selectionView.style.display = 'none';
+    loadingView.style.display = 'block';
+    resultView.style.display = 'none';
 
-        const playerScoreDisplay = document.querySelector('#player-score');
-        const computerScoreDisplay = document.querySelector('#computer-score');
+    const computerChoice = getComputerChoice();
+    let threeSeconds = 3000;
 
-        const computerChoice = getComputerChoice();
-
-        
-        let threeSeconds = 3000;
-
-        setTimeout(() => {
+    setTimeout(() => {
         if (humanChoice === computerChoice.name) {
             displayResult('It\'s a tie!', humanChoice, computerChoice);
             return;
         }
+
         if (humanChoice === computerChoice.defeats) {
-            const computerScore = parseInt(localStorage.getItem('computerScore'));
-            localStorage.setItem('computerScore', computerScore + 1);
-            computerScoreDisplay.textContent = localStorage.getItem('computerScore');
+            let computerScore = parseInt(localStorage.getItem('computerScore'));
+            computerScore += 1;
+            localStorage.setItem('computerScore', computerScore);
+            computerScoreDisplay.textContent = computerScore;
             displayResult('You lose!', humanChoice, computerChoice);
             return;
         }
-        
-        const humanScore = parseInt(localStorage.getItem('playerScore'));
-        localStorage.setItem('playerScore', humanScore + 1);
-        playerScoreDisplay.textContent = localStorage.getItem('playerScore');
-        displayResult('You win!', humanChoice, computerChoice);
-        return;
-        }, threeSeconds);
-    }); 
 
+        let humanScore = parseInt(localStorage.getItem('playerScore'));
+        humanScore += 1;
+        localStorage.setItem('playerScore', humanScore);
+        playerScoreDisplay.textContent = humanScore;
+        displayResult('You win!', humanChoice, computerChoice);
+    }, threeSeconds);
 }
 
 function getComputerChoice() {
@@ -100,6 +111,7 @@ function displayResult(message, humanChoice, computerChoice) {
     const player = document.querySelector('#player');
     const computer = document.querySelector('#computer');
     const result = document.querySelector('#result');
+    const winner = document.querySelector('#winner');
 
     const playAgainButton = document.querySelector('#play-again');
 
@@ -111,9 +123,14 @@ function displayResult(message, humanChoice, computerChoice) {
     computer.textContent = computerChoice.name;
     result.textContent = message;
 
-    playAgainButton.addEventListener('click', function() {
-        playAgain();
-    });
+    if (localStorage.getItem('playerScore') >= 5) {
+        winner.textContent = 'You win the game!';
+    }
+    else if (localStorage.getItem('computerScore') >= 5) {
+        winner.textContent = 'Computer wins the game!';
+    }
+
+    playAgainButton.onclick = playAgain;
 }
 
 function playAgain() {
@@ -121,11 +138,32 @@ function playAgain() {
     const loadingView = document.getElementById('loading-view');
     const resultView = document.getElementById('result-view');
     const humanChoice = document.querySelector('#selection');
+    const playButton = document.querySelector('#play');
+    const winner = document.querySelector('#winner');
 
     selectionView.style.display = 'block';
     loadingView.style.display = 'none';
     resultView.style.display = 'none';
     humanChoice.textContent = '';
+    playButton.style.display = 'none';
+    winner.textContent = '';
 
-    humanChoice();
+    const playerScoreDisplay = document.querySelector('#player-score');
+    const computerScoreDisplay = document.querySelector('#computer-score');
+    
+    if (localStorage.getItem('playerScore') >= 5) {
+        localStorage.setItem('playerScore', 0);
+        localStorage.setItem('computerScore', 0);
+        playerScoreDisplay.textContent = 0;
+        computerScoreDisplay.textContent = 0;
+    }
+    else if (localStorage.getItem('computerScore') >= 5) {
+        localStorage.setItem('playerScore', 0);
+        localStorage.setItem('computerScore', 0);
+        playerScoreDisplay.textContent = 0;
+        computerScoreDisplay.textContent = 0;
+    }
+
+    playerScoreDisplay.textContent = localStorage.getItem('playerScore');
+    computerScoreDisplay.textContent = localStorage.getItem('computerScore');
 }
