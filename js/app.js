@@ -4,18 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingView = document.getElementById('loading-view');
     const resultView = document.getElementById('result-view');
     const playButton = document.querySelector('#play');
+    const playerScoreDisplay = document.querySelector('#player-score');
+    const computerScoreDisplay = document.querySelector('#computer-score');
 
     selectionView.style.display = 'block';
     loadingView.style.display = 'none';
     resultView.style.display = 'none';
     playButton.style.display = 'none';
+    
+    playerScoreDisplay.textContent = localStorage.getItem('playerScore');
+    computerScoreDisplay.textContent = localStorage.getItem('computerScore');
 
     humanChoice();
-
-    const selectedChoice = document.querySelector('#selection');
-
-    
 });
+
+
+if (localStorage.getItem('playerScore') === null) {
+    localStorage.setItem('playerScore', 0);
+}
+
+if (localStorage.getItem('computerScore') === null) {
+    localStorage.setItem('computerScore', 0);
+}
 
 function humanChoice() {
     const choices = document.querySelectorAll('.choices');
@@ -46,6 +56,9 @@ function playRound(humanChoice) {
         loadingView.style.display = 'block';
         resultView.style.display = 'none';
 
+        const playerScoreDisplay = document.querySelector('#player-score');
+        const computerScoreDisplay = document.querySelector('#computer-score');
+
         const computerChoice = getComputerChoice();
 
         
@@ -57,9 +70,16 @@ function playRound(humanChoice) {
             return;
         }
         if (humanChoice === computerChoice.defeats) {
+            const computerScore = parseInt(localStorage.getItem('computerScore'));
+            localStorage.setItem('computerScore', computerScore + 1);
+            computerScoreDisplay.textContent = localStorage.getItem('computerScore');
             displayResult('You lose!', humanChoice, computerChoice);
             return;
         }
+        
+        const humanScore = parseInt(localStorage.getItem('playerScore'));
+        localStorage.setItem('playerScore', humanScore + 1);
+        playerScoreDisplay.textContent = localStorage.getItem('playerScore');
         displayResult('You win!', humanChoice, computerChoice);
         return;
         }, threeSeconds);
@@ -100,13 +120,12 @@ function playAgain() {
     const selectionView = document.getElementById('selection-view');
     const loadingView = document.getElementById('loading-view');
     const resultView = document.getElementById('result-view');
-    const playAgainButton = document.querySelector('#play-again');
     const humanChoice = document.querySelector('#selection');
 
     selectionView.style.display = 'block';
     loadingView.style.display = 'none';
     resultView.style.display = 'none';
-    playAgainButton.style.display = 'none';
     humanChoice.textContent = '';
 
+    humanChoice();
 }
