@@ -1,58 +1,112 @@
+import * as Choices from './choices.js';
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(playGame());
+    const selectionView = document.getElementById('selection-view');
+    const loadingView = document.getElementById('loading-view');
+    const resultView = document.getElementById('result-view');
+    const playButton = document.querySelector('#play');
+
+    selectionView.style.display = 'block';
+    loadingView.style.display = 'none';
+    resultView.style.display = 'none';
+    playButton.style.display = 'none';
+
+    humanChoice();
+
+    const selectedChoice = document.querySelector('#selection');
+
+    
 });
 
-function getComputerChoice() {
-    const scissors = {
-        name: 'scissors',
-        defeats: 'paper'
-    };
-    const rock = {
-        name: 'rock',
-        defeats: 'scissors'
-    };
-    const paper = {
-        name: 'paper',
-        defeats: 'rock'
-    };
-    const choices = [scissors, rock, paper];
-    const randomNumber = Math.floor(Math.random() * 3);
-    return choices[randomNumber];
+function humanChoice() {
+    const choices = document.querySelectorAll('.choices');
+    choices.forEach(choice => {
+        choice.addEventListener('click', function() {
+            const selectedChoice = choice.getAttribute('data-choice');
+            const showSelected = document.querySelector('#selection');
+            const playButton = document.querySelector('#play');
+
+            showSelected.textContent = selectedChoice;
+            playButton.style.display = 'block';
+            
+
+            playRound(selectedChoice);
+        });
+    });
 }
 
-function getHumanChoice() {
-    let HumanChoice = prompt("Rock, Paper or Scissors?").toLocaleLowerCase();
-    while (HumanChoice !== 'rock' && HumanChoice !== 'paper' && HumanChoice !== 'scissors') {
-        alert('Invalid choice! Please choose Rock, Paper or Scissors.');
-        HumanChoice = prompt("Rock, Paper or Scissors?");
-    }
-    return HumanChoice;
-}
+function playRound(humanChoice) {
+    const playButton = document.querySelector('#play');
+    const selectionView = document.getElementById('selection-view');
+    const loadingView = document.getElementById('loading-view');
+    const resultView = document.getElementById('result-view');
 
-function playRound() {
-    const computerChoice = getComputerChoice();
-    const humanChoice = getHumanChoice();
-    if (computerChoice.name === humanChoice) {
-        return ['It\'s a tie!', 0];
-    }
-    if (computerChoice.defeats === humanChoice) {
-        return ['Computer wins!', -1];
-    }
-    return ['Human wins!', 1];
-}
+    playButton.addEventListener('click', function () {
+        playButton.style.display = 'none';
+        selectionView.style.display = 'none';
+        loadingView.style.display = 'block';
+        resultView.style.display = 'none';
 
-function playGame() {
-    roundScores = 0;
-    for (let i = 0; i < 5; i++) {
-        result = playRound();
-        console.log(result[0]);
-        roundScores += result[1];
-    }
-    if (roundScores !== 0) {
-        if (roundScores > 0) {
-            return 'Human wins the game!';
+        const computerChoice = getComputerChoice();
+
+        
+        let threeSeconds = 3000;
+
+        setTimeout(() => {
+        if (humanChoice === computerChoice.name) {
+            displayResult('It\'s a tie!', humanChoice, computerChoice);
+            return;
         }
-        return 'Computer wins the game!';
-    }
-    return 'It\'s a tie!';
+        if (humanChoice === computerChoice.defeats) {
+            displayResult('You lose!', humanChoice, computerChoice);
+            return;
+        }
+        displayResult('You win!', humanChoice, computerChoice);
+        return;
+        }, threeSeconds);
+    }); 
+
+}
+
+function getComputerChoice() {
+    const randomChoice = Math.floor(Math.random() * Choices.choices.length);
+    return Choices.choices[randomChoice];
+}
+
+function displayResult(message, humanChoice, computerChoice) {
+    const selectionView = document.getElementById('selection-view');
+    const loadingView = document.getElementById('loading-view');
+    const resultView = document.getElementById('result-view');
+
+    const player = document.querySelector('#player');
+    const computer = document.querySelector('#computer');
+    const result = document.querySelector('#result');
+
+    const playAgainButton = document.querySelector('#play-again');
+
+    selectionView.style.display = 'none';
+    loadingView.style.display = 'none';
+    resultView.style.display = 'block';
+
+    player.textContent = humanChoice;
+    computer.textContent = computerChoice.name;
+    result.textContent = message;
+
+    playAgainButton.addEventListener('click', function() {
+        playAgain();
+    });
+}
+
+function playAgain() {
+    const selectionView = document.getElementById('selection-view');
+    const loadingView = document.getElementById('loading-view');
+    const resultView = document.getElementById('result-view');
+    const playAgainButton = document.querySelector('#play-again');
+    const humanChoice = document.querySelector('#selection');
+
+    selectionView.style.display = 'block';
+    loadingView.style.display = 'none';
+    resultView.style.display = 'none';
+    playAgainButton.style.display = 'none';
+    humanChoice.textContent = '';
+
 }
