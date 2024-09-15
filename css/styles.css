@@ -1,5 +1,54 @@
+@media (max-width: 600px) {
+    body {
+        font-family: 'Press Start 2P', cursive;
+    }
+  .container {
+    width: 100%;
+  }
+}
 
+@media (min-width: 601px) {
+    body {
+        font-family: 'Press Start 2P', cursive;
+        background-color: #3C3D37;
+        color: #5af08c; 
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+    }
 
-body {
+    main {
+        width: 80%;
+        margin: auto;
+    }
+    
+  .navbar {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1%;
+    background-color: #181C14;
+  }  
+
+  header {
+    margin-bottom: 2%;
+  }
+  
+  .scores {
+    display: flex;
+    justify-content: space-between;
+    gap: 1%;
+  }
+
+  button {
+    background-color: #181C14;
+    color: #5af08c;
+    border: 1px solid #5af08c;
+    padding: 2%;
+    font-size: 1rem;
+    cursor: pointer;
     font-family: 'Press Start 2P', cursive;
+  }
 }

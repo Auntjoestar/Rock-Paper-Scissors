@@ -12,14 +12,16 @@
     </head>
     <body>
         <header>
-            <h1>Rock, Paper, Scissors!</h1>
-            <h2>made by: Auntjoestar.</h2>
-            <div>
-                <p>Player Score: <span id="player-score">0</span></p>
-                <p>Computer Score: <span id="computer-score">0</span></p>
-            </div>
+            <nav class="navbar">
+                <h1>Rock, Paper, Scissors!</h1>
+                <div class="scores">
+                    <p>Player Score: <span id="player-score">0</span></p>
+                    <p>Computer Score: <span id="computer-score">0</span></p>
+                </div>
+            </nav>
         </header>
         <main>
+            <div class="contaniner">
             <section id="selection-view">
                 <h3>Select your fate:</h3>
                 <button class="choices" id="rock" data-choice="rock">Rock</button>
@@ -38,6 +40,8 @@
                 <p id="result"></p>
                 <h3 id="winner"></h3>
                 <button id="play-again">Play again!</button>
+            </section>
+        </div>
         </main>
     </body>
 </html>
